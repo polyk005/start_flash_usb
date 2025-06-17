@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Chrome",
+        "url": "https://dl.google.com/chrome/install/standalonesetup.exe",
+        "args": ["/silent", "/install"],
+        "os": "windows"
+    },
+    {
+        "name": "VSCode",
+        "cmd": "winget",
+        "args": ["install", "-e", "--id", "Microsoft.VisualStudioCode"],
+        "os": "windows"
+    },
+    {
+        "name": "7-Zip",
+        "path": "./apps/7z.exe",
+        "args": ["/S"],
+        "os": "windows"
+    },
+    {
+        "name": "Telegram",
+        "path": "./apps/telegram.exe",
+        "args": ["/silent"],
+        "os": "windows"
+    }
+]

@@ -1,0 +1,10 @@
+{
+    "windows":{
+        "tempDir" : "C:/Temp",
+        "adminRequired" : true
+    },
+    "linux" : {
+        "tempDir" : "/temp",
+        "adminRequired" : true
+    }
+}
