@@ -4,45 +4,139 @@ import (
 	"fmt"
 	"math/rand"
 	"os/exec"
+	"sync"
 	"time"
 )
 
 type AppConfig struct {
-	Name string
-	Path string
-	Args []string
+	Name     string
+	Path     string
+	Args     []string
+	CheckCmd string
 }
+
+var (
+	installMutex  sync.Mutex
+	installedApps = make(map[string]bool)
+	successCount  int
+	failedCount   int
+	totalDuration time.Duration
+)
 
 func main() {
 	clearConsole()
 	setGreenText()
 	showDedSecArt()
-	time.Sleep(5 * time.Second)
+	time.Sleep(3 * time.Second)
 
-	fmt.Println("\n[!] Взлом системы запущен...")
+	fmt.Println("\n[!] Инициализация системы DedSec...")
 	fakeHackAnimation()
 
 	apps := []AppConfig{
-		{Name: "Chrome", Path: "./apps/chrome.exe", Args: []string{"/silent"}},
-		{Name: "7-Zip", Path: "./apps/7z.exe", Args: []string{"/S"}},
+		{
+			Name:     "Chrome",
+			Path:     "./apps/YChromeSetup.exe",
+			Args:     []string{"/silent"},
+			CheckCmd: `reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe"`,
+		},
+		{
+			Name:     "7-Zip",
+			Path:     "./apps/7z2409-x64.exe",
+			Args:     []string{"/S"},
+			CheckCmd: `reg query "HKLM\SOFTWARE\7-Zip"`,
+		},
+		{
+			Name:     "Telegram",
+			Path:     "./apps/tsetup-x64.5.15.4.exe",
+			Args:     []string{"/silent"},
+			CheckCmd: `reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\{53F49750-6209-4FBF-9CA8-7A333C87D1ED}"`,
+		},
 	}
+
+	startTime := time.Now()
+	var wg sync.WaitGroup
 
 	for _, app := range apps {
-		installApp(app)
+		wg.Add(1)
+		go func(a AppConfig) {
+			defer wg.Done()
+			installApp(a)
+		}(app)
 	}
 
-	fmt.Println("\n✅ Установка завершена. DedSec гордится вами!")
+	wg.Wait()
+	totalDuration = time.Since(startTime)
+
+	showInstallationSummary()
 	pause()
 }
 
+func installApp(app AppConfig) {
+	installMutex.Lock()
+	defer installMutex.Unlock()
+
+	if isInstalled(app) {
+		fmt.Printf("\n✔ %s уже установлен (пропуск)\n", app.Name)
+		successCount++
+		return
+	}
+
+	fmt.Printf("\n🔧 [%s] Начало установки...\n", time.Now().Format("15:04:05"))
+	fmt.Printf(">> Исполняемый файл: %s\n", app.Path)
+
+	startTime := time.Now()
+	cmd := exec.Command(app.Path, app.Args...)
+
+	// Запускаем процесс
+	if err := cmd.Start(); err != nil {
+		fmt.Printf("❌ [%s] Ошибка запуска: %v\n", app.Name, err)
+		failedCount++
+		return
+	}
+
+	// Канал для отслеживания завершения
+	done := make(chan error, 1)
+	go func() {
+		done <- cmd.Wait()
+	}()
+
+	// Таймаут 10 минут на установку
+	select {
+	case err := <-done:
+		duration := time.Since(startTime).Round(time.Second)
+		if err != nil {
+			fmt.Printf("❌ [%s] Ошибка установки (за %s): %v\n", app.Name, duration, err)
+			failedCount++
+		} else {
+			fmt.Printf("✅ [%s] Успешно установлен за %s\n", app.Name, duration)
+			successCount++
+			installedApps[app.Name] = true
+		}
+
+	case <-time.After(10 * time.Minute):
+		cmd.Process.Kill()
+		fmt.Printf("⚠️ [%s] Превышено время ожидания (10 мин)\n", app.Name)
+		failedCount++
+	}
+}
+
+func isInstalled(app AppConfig) bool {
+	if app.CheckCmd == "" {
+		return false
+	}
+
+	cmd := exec.Command("cmd", "/C", app.CheckCmd)
+	return cmd.Run() == nil
+}
+
 func showDedSecArt() {
-	fmt.Println(`
-  ██████╗ ███████╗██████╗ ███████╗
- ██╔═══██╗██╔════╝██╔══██╗██╔════╝
- ██║   ██║█████╗  ██║  ██║███████╗
- ██║   ██║██╔══╝  ██║  ██║╚════██║
- ╚██████╔╝██║     ██████╔╝███████║
-  ╚═════╝ ╚═╝     ╚═════╝ ╚══════╝
+	fmt.Print(`
+  _____          _    _____ ______ 
+ |  __ \   /\   | |  / ____|  ____|
+ | |  | | /  \  | | | (___ | |__   
+ | |  | |/ /\ \ | |  \___ \|  __|  
+ | |__| / ____ \| |  ____) | |____ 
+ |_____/_/    \_\_| |_____/|______|
 `)
 }
 
@@ -65,16 +159,13 @@ func fakeHackAnimation() {
 		"Трафик камер ALX-9",
 	}
 
-	// Начало атаки
 	fmt.Println("\n\x1b[34m[+] Инициализация руткита DedSec_v9...\x1b[0m")
 	time.Sleep(1 * time.Second)
 
-	// Фазы взлома
 	for phaseNum, phase := range phases {
 		fmt.Printf("\n\x1b[36m[%d/%d] %s...\x1b[0m\n", phaseNum+1, len(phases), phase.name)
 
 		for i := 0; i < 100; {
-			// Случайный прогресс
 			step := rand.Intn(15) + 5
 			if i+step > 100 {
 				i = 100
@@ -82,7 +173,6 @@ func fakeHackAnimation() {
 				i += step
 			}
 
-			// Глюки системы
 			if rand.Intn(100) < phase.glitchChance {
 				glitchTypes := []string{
 					"TRACE DETECTED",
@@ -97,34 +187,36 @@ func fakeHackAnimation() {
 				continue
 			}
 
-			// Основная анимация
 			target := targets[rand.Intn(len(targets))]
 			ip := fmt.Sprintf("%d.%d.%d.%d:%d",
 				rand.Intn(255), rand.Intn(255),
 				rand.Intn(255), rand.Intn(255),
 				rand.Intn(65535))
 
-			// Стилизованный вывод
 			fmt.Printf("\r>> %-25s [%-20s] \x1b[33m%3d%%\x1b[0m",
 				truncate(target, 25),
 				ip,
 				i)
 
-			// Динамическая задержка
-			time.Sleep(time.Duration(phase.delay+time.Duration(rand.Intn(2))) * time.Millisecond)
+			time.Sleep(time.Duration(phase.delay+time.Duration(rand.Intn(200))) * time.Millisecond)
 		}
 
-		// Финальный статус фазы
-		fmt.Printf("\r\x1b[32m[+] %s УСПЕШНО\x1b[0m%-30s\n",
-			phase.name, "")
+		fmt.Printf("\r\x1b[32m[+] %s УСПЕШНО\x1b[0m%-30s\n", phase.name, "")
 		time.Sleep(500 * time.Millisecond)
 	}
 
-	// Финальный взлом
 	fmt.Println("\n\x1b[5;32m[!] СИСТЕМА СКОМПРОМЕТИРОВАНА\x1b[0m")
 	time.Sleep(1 * time.Second)
-	fmt.Println("\x1b[32m[+] Установка backdoor...\x1b[0m")
+	fmt.Println("\x1b[32m[+] Подготовка к установке...\x1b[0m")
 	time.Sleep(2 * time.Second)
+}
+
+func showInstallationSummary() {
+	fmt.Printf("\n\x1b[36m=== ИТОГИ УСТАНОВКИ ===\x1b[0m\n")
+	fmt.Printf("Успешно: \x1b[32m%d\x1b[0m\n", successCount)
+	fmt.Printf("Неудачно: \x1b[31m%d\x1b[0m\n", failedCount)
+	fmt.Printf("Общее время: \x1b[33m%s\x1b[0m\n", totalDuration.Round(time.Second))
+	fmt.Println("\n\x1b[32m[+] DedSec завершил операцию\x1b[0m")
 }
 
 func truncate(s string, max int) string {
@@ -132,17 +224,6 @@ func truncate(s string, max int) string {
 		return s[:max-3] + "..."
 	}
 	return s
-}
-
-func installApp(app AppConfig) {
-	fmt.Printf("\n🔧 Устанавливаем %s...\n", app.Name)
-
-	cmd := exec.Command(app.Path, app.Args...)
-	if err := cmd.Run(); err != nil {
-		fmt.Printf("❌ Ошибка: %v\n", err)
-	} else {
-		fmt.Printf("✔ %s взломан и установлен!\n", app.Name)
-	}
 }
 
 func clearConsole() {
@@ -154,6 +235,6 @@ func setGreenText() {
 }
 
 func pause() {
-	fmt.Print("\nНажмите Enter...")
+	fmt.Print("\nНажмите Enter для выхода...")
 	fmt.Scanln()
 }
