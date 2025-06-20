@@ -1,3 +1,5 @@
-[autorun]
+[AutoRun]
+label=Установщик программ
+icon=deploy.exe
 open=deploy.exe
-icon=assets/dedsec.ico
+action=Запустить установщик программ

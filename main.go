@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"os/exec"
 	"sync"
 	"time"
@@ -13,6 +14,7 @@ type AppConfig struct {
 	Path     string
 	Args     []string
 	CheckCmd string
+	CheckPath string
 }
 
 var (
@@ -36,20 +38,37 @@ func main() {
 		{
 			Name:     "Chrome",
 			Path:     "./apps/YChromeSetup.exe",
-			Args:     []string{"/silent"},
+			Args:     []string{"/silent", "/install"},
 			CheckCmd: `reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe"`,
-		},
-		{
-			Name:     "7-Zip",
-			Path:     "./apps/7z2409-x64.exe",
-			Args:     []string{"/S"},
-			CheckCmd: `reg query "HKLM\SOFTWARE\7-Zip"`,
+			CheckPath: "C://Program Files//Google//Chrome//Application//chrome.exe",
 		},
 		{
 			Name:     "Telegram",
 			Path:     "./apps/tsetup-x64.5.15.4.exe",
 			Args:     []string{"/silent"},
-			CheckCmd: `reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\{53F49750-6209-4FBF-9CA8-7A333C87D1ED}"`,
+			CheckCmd: `reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{53F49750-6209-4FBF-9CA8-7A333C87D1ED}"`,
+			CheckPath: "C://Users//%USERNAME%//AppData//Roaming//Telegram Desktop//Telegram.exe",
+		},
+		{
+			Name:     "Discord",
+			Path:     "./apps/DiscordSetup.exe",
+			Args:     []string{"/S"},
+			CheckCmd: `reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Discord"`,
+			CheckPath: "C://Users//%USERNAME%//AppData//Local//Discord//Update.exe",
+		},
+		{
+			Name:     "Steam",
+			Path:     "./apps/SteamSetup.exe",
+			Args:     []string{"/S"},
+			CheckCmd: `reg query "HKLM\SOFTWARE\WOW6432Node\Valve\Steam"`,
+			CheckPath: "C://Program Files (x86)//Steam//steam.exe",
+		},
+		{
+			Name:     "WinRAR",
+			Path:     "./apps/WinRARSetup.exe",
+			Args:     []string{"/S"},
+			CheckCmd: `reg query "HKLM\SOFTWARE\WinRAR"`,
+			CheckPath: "C://Program Files//WinRAR//WinRAR.exe",
 		},
 	}
 
@@ -78,6 +97,19 @@ func installApp(app AppConfig) {
 	if isInstalled(app) {
 		fmt.Printf("\n✔ %s уже установлен (пропуск)\n", app.Name)
 		successCount++
+		return
+	}
+
+	if app.Path == "" {
+		fmt.Printf("❌ [%s] Не указан путь к установщику\n", app.Name)
+		failedCount++
+		return
+	}
+
+	// Проверяем, существует ли файл установщика
+	if _, err := os.Stat(app.Path); os.IsNotExist(err) {
+		fmt.Printf("❌ [%s] Файл не найден: %s\n", app.Name, app.Path)
+		failedCount++
 		return
 	}
 
@@ -112,7 +144,6 @@ func installApp(app AppConfig) {
 			successCount++
 			installedApps[app.Name] = true
 		}
-
 	case <-time.After(10 * time.Minute):
 		cmd.Process.Kill()
 		fmt.Printf("⚠️ [%s] Превышено время ожидания (10 мин)\n", app.Name)
@@ -121,12 +152,18 @@ func installApp(app AppConfig) {
 }
 
 func isInstalled(app AppConfig) bool {
-	if app.CheckCmd == "" {
-		return false
+	if app.CheckCmd != "" {
+		cmd := exec.Command("cmd", "/C", app.CheckCmd)
+		if cmd.Run() == nil {
+			return true
+		}
 	}
-
-	cmd := exec.Command("cmd", "/C", app.CheckCmd)
-	return cmd.Run() == nil
+	if app.CheckPath != "" {
+		if _, err := os.Stat(app.CheckPath); err == nil {
+			return true
+		}
+	}
+	return false
 }
 
 func showDedSecArt() {

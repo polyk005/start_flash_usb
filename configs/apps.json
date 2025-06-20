@@ -3,24 +3,47 @@
         "name": "Chrome",
         "url": "https://dl.google.com/chrome/install/standalonesetup.exe",
         "args": ["/silent", "/install"],
+        "check": "reg query \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe\"",
         "os": "windows"
     },
     {
-        "name": "VSCode",
-        "cmd": "winget",
-        "args": ["install", "-e", "--id", "Microsoft.VisualStudioCode"],
+        "name": "WinRAR",
+        "url": "https://www.rarlab.com/rar/winrar-x64-621ru.exe",
+        "args": ["/S"],
+        "check": "reg query \"HKLM\\SOFTWARE\\WinRAR\"",
+        "checkPath": "C:\\Program Files\\WinRAR\\WinRAR.exe",
         "os": "windows"
     },
     {
         "name": "7-Zip",
-        "path": "./apps/7z.exe",
+        "url": "https://www.7-zip.org/a/7z2409-x64.exe",
         "args": ["/S"],
+        "check": "reg query \"HKLM\\SOFTWARE\\7-Zip\"",
+        "checkPath": "C:\\Program Files\\7-Zip\\7zFM.exe",
         "os": "windows"
     },
     {
         "name": "Telegram",
-        "path": "./apps/telegram.exe",
+        "url": "https://telegram.org/dl/desktop/win64",
         "args": ["/silent"],
+        "check": "reg query \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{53F49750-6209-4FBF-9CA8-7A333C87D1ED}\"",
+        "checkPath": "C:\\Users\\%USERNAME%\\AppData\\Roaming\\Telegram Desktop\\Telegram.exe",
+        "os": "windows"
+    },
+    {
+        "name": "Discord",
+        "url": "https://discord.com/api/download?platform=win",
+        "args": ["/S"],
+        "check": "reg query \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Discord\"",
+        "checkPath": "C:\\Users\\%USERNAME%\\AppData\\Local\\Discord\\Update.exe",
+        "os": "windows"
+    },
+    {
+        "name": "Steam",
+        "url": "https://cdn.cloudflare.steamstatic.com/client/installer/SteamSetup.exe",
+        "args": ["/S"],
+        "check": "reg query \"HKLM\\SOFTWARE\\WOW6432Node\\Valve\\Steam\"",
+        "checkPath": "C:\\Program Files (x86)\\Steam\\Steam.exe",
         "os": "windows"
     }
 ]

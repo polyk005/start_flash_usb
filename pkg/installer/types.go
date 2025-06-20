@@ -7,4 +7,6 @@ type AppConfig struct {
 	Cmd  string   `json:"cmd"`
 	Args []string `json:"args"`
 	OS   string   `json:"os"`
+	CheckCmd  string   `json:"check"`
+	CheckPath string   `json:"checkPath"`
 }
