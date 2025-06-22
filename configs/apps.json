@@ -1,49 +1,118 @@
 [
     {
-        "name": "Chrome",
+        "name": "7-Zip",
+        "path": "apps/7z2409-x64.exe",
+        "args": ["/S"],
+        "checkPath": "C:\\Program Files\\7-Zip\\7z.exe",
+        "category": "Utilities",
+        "os": "windows"
+    },
+    {
+        "name": "Google Chrome",
         "url": "https://dl.google.com/chrome/install/standalonesetup.exe",
         "args": ["/silent", "/install"],
-        "check": "reg query \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe\"",
+        "checkPath": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+        "category": "Browsers",
         "os": "windows"
     },
     {
         "name": "WinRAR",
         "url": "https://www.rarlab.com/rar/winrar-x64-621ru.exe",
         "args": ["/S"],
-        "check": "reg query \"HKLM\\SOFTWARE\\WinRAR\"",
-        "checkPath": "C:\\Program Files\\WinRAR\\WinRAR.exe",
+        "checkPath": "C:\\Program Files\\WinRAR\\winrar-x64-711ru.exe",
+        "category": "Utilities",
         "os": "windows"
     },
     {
-        "name": "7-Zip",
-        "url": "https://www.7-zip.org/a/7z2409-x64.exe",
-        "args": ["/S"],
-        "check": "reg query \"HKLM\\SOFTWARE\\7-Zip\"",
-        "checkPath": "C:\\Program Files\\7-Zip\\7zFM.exe",
-        "os": "windows"
-    },
-    {
-        "name": "Telegram",
-        "url": "https://telegram.org/dl/desktop/win64",
+        "name": "Telegram Desktop",
+        "url": "https://telegram.org/dl/desktop/tsetup-x64.5.15.4.exe",
         "args": ["/silent"],
-        "check": "reg query \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{53F49750-6209-4FBF-9CA8-7A333C87D1ED}\"",
         "checkPath": "C:\\Users\\%USERNAME%\\AppData\\Roaming\\Telegram Desktop\\Telegram.exe",
+        "category": "Messaging",
         "os": "windows"
     },
     {
         "name": "Discord",
         "url": "https://discord.com/api/download?platform=win",
         "args": ["/S"],
-        "check": "reg query \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Discord\"",
         "checkPath": "C:\\Users\\%USERNAME%\\AppData\\Local\\Discord\\Update.exe",
+        "category": "Messaging",
         "os": "windows"
     },
     {
         "name": "Steam",
         "url": "https://cdn.cloudflare.steamstatic.com/client/installer/SteamSetup.exe",
         "args": ["/S"],
-        "check": "reg query \"HKLM\\SOFTWARE\\WOW6432Node\\Valve\\Steam\"",
-        "checkPath": "C:\\Program Files (x86)\\Steam\\Steam.exe",
+        "checkPath": "C:\\Program Files (x86)\\Steam\\steam.exe",
+        "category": "Gaming",
+        "os": "windows"
+    },
+    {
+        "name": "Epic Games Launcher",
+        "url": "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi",
+        "args": ["/quiet"],
+        "checkPath": "C:\\Program Files (x86)\\Epic Games\\Launcher\\Portal\\Binaries\\Win32\\EpicGamesLauncher.exe",
+        "category": "Gaming",
+        "os": "windows"
+    },
+    {
+        "name": "VS Code",
+        "url": "https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user",
+        "args": ["/verysilent", "/mergetasks=!runcode"],
+        "checkPath": "C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+        "category": "Development",
+        "os": "windows"
+    },
+    {
+        "name": "Docker Desktop",
+        "url": "https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe",
+        "args": ["install", "--quiet"],
+        "checkPath": "C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe",
+        "category": "Development",
+        "os": "windows"
+    },
+    {
+        "name": "qBittorrent",
+        "url": "https://sourceforge.net/projects/qbittorrent/files/qbittorrent-win32/qbittorrent-4.6.5/qbittorrent_4.6.5_x64_setup.exe/download",
+        "args": ["/S"],
+        "checkPath": "C:\\Program Files\\qBittorrent\\qbittorrent.exe",
+        "category": "Utilities",
+        "os": "windows"
+    },
+    {
+        "name": "NVIDIA App",
+        "url": "https://www.nvidia.com/en-us/geforce/geforce-experience/download/",
+        "args": [],
+        "checkPath": "C:\\Program Files\\NVIDIA Corporation\\NVIDIA GeForce Experience\\NVIDIA GeForce Experience.exe",
+        "category": "Utilities",
+        "os": "windows",
+        "description": "Installer must be downloaded manually from the URL."
+    },
+    {
+        "name": "Adobe Photoshop",
+        "path": "apps/photoshop_installer.exe",
+        "args": [],
+        "checkPath": "C:\\Program Files\\Adobe\\Adobe Photoshop 2024\\Photoshop.exe",
+        "category": "Graphics",
+        "os": "windows",
+        "description": "Commercial software. Place the installer in the 'apps' folder."
+    },
+    {
+        "name": "Vegas Pro 19",
+        "path": "apps/vegaspro19_installer.exe",
+        "args": [],
+        "checkPath": "C:\\Program Files\\VEGAS\\VEGAS Pro 19.0\\vegas190.exe",
+        "category": "Video",
+        "os": "windows",
+        "description": "Commercial software. Place the installer in the 'apps' folder."
+    },
+    {
+        "name": "Git",
+        "path": "apps/Git-2.49.0-64-bit.exe",
+        "args": ["/VERYSILENT"],
+        "installDirArgTpl": "/DIR=\"%s\"",
+        "checkPath": "cmd\\git.exe",
+        "category": "Development",
         "os": "windows"
     }
 ]

@@ -1,5 +1,0 @@
-[AutoRun]
-label=Установщик программ
-icon=deploy.exe
-open=deploy.exe
-action=Запустить установщик программ

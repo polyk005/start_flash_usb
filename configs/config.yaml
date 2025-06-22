@@ -1,0 +1,21 @@
+app:
+  name: "StartFlash"
+  version: "1.0.0"
+  environment: "development"
+  config_path: "./configs"
+
+logging:
+  level: "info"
+  format: "text"
+  file: ""
+
+install:
+  timeout: "10m"
+  max_concurrency: 3
+  install_base_path: "./Program Files (x86)"
+  apps_config_path: "./configs/apps.json"
+  apps_directory: "./apps"
+
+database:
+  type: "memory"
+  path: "" 

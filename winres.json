@@ -1,0 +1,46 @@
+{
+    "RT_GROUP_ICON": {
+        "APP": {
+            "0000": [
+                "icon.ico",
+                0,
+                0
+            ]
+        }
+    },
+    "RT_ICON": {},
+    "RT_MANIFEST": {
+        "#1": {
+            "0409": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<assembly xmlns=\"urn:schemas-microsoft-com:asm.v1\" manifestVersion=\"1.0\">\n<assemblyIdentity\n    version=\"1.0.0.0\"\n    processorArchitecture=\"*\"\n    name=\"StartFlash.exe\"\n    type=\"win32\"\n/>\n<description>A utility to install multiple applications quickly.</description>\n<dependency>\n    <dependentAssembly>\n        <assemblyIdentity\n            type=\"win32\"\n            name=\"Microsoft.Windows.Common-Controls\"\n            version=\"6.0.0.0\"\n            processorArchitecture=\"*\"\n            publicKeyToken=\"6595b64144ccf1df\"\n            language=\"*\"\n        />\n    </dependentAssembly>\n</dependency>\n</assembly>"
+        }
+    },
+    "RT_VERSION": {
+        "#1": {
+            "0000": {
+                "fixed": {
+                    "flag": "0x3f",
+                    "os": "0x40004",
+                    "type": "0x1",
+                    "subtype": "0x0",
+                    "date_hi": "0x0",
+                    "date_lo": "0x0",
+                    "ver_hi": "0x10000",
+                    "ver_lo": "0x0"
+                },
+                "info": {
+                    "0409": {
+                        "Comments": "Installs applications from a predefined list.",
+                        "CompanyName": "StartFlash",
+                        "FileDescription": "StartFlash Application Installer",
+                        "FileVersion": "1.0.0.0",
+                        "InternalName": "StartFlash",
+                        "LegalCopyright": "Copyright (C) 2024",
+                        "OriginalFilename": "start_flash_interactive.exe",
+                        "ProductName": "StartFlash",
+                        "ProductVersion": "1.0.0"
+                    }
+                }
+            }
+        }
+    }
+} 
